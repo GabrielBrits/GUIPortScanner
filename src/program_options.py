@@ -4,6 +4,7 @@ import sys
 
 def process_args(args: List[str]) -> Options:
     validScan: List[str] = ["-sT", "-sI", "-sS", "-sN", "-sF", "sX"]
+    options: Options = Options("-sT", "0.0.0.0", 0)
     if args[1] == "--help":
         print_help()
         exit()
@@ -17,11 +18,18 @@ def process_args(args: List[str]) -> Options:
         except ValueError:
             raise Exception("Incorrect argument usage, use --help for more information.")
         if (port > 0 and port < 65536):
-            options = Options("-sT", args[2], args[3])
+            options = Options("-sT", args[2], port)
         else:
-            raise Exception("Invalid port number, needs to be in the range of 1 - 65545 (inclusive)")
-    elif len(args) == 5 and args[1] in validScan and args[2] == "-p" and (int(args[3]) > 0 and int(args[3]) < 65536):
-        options = Options(args[1], args[4], args[3])
+            raise Exception("Invalid port number, needs to be in the range of 1 - 65535 (inclusive)")
+    elif len(args) == 5 and args[1] in validScan and args[2] == "-p":
+        try:
+            port = int(args[3])
+        except ValueError:
+            raise Exception("Incorrect argument usage, use --help for more information.")
+        if (port > 0 and port < 65536):
+            options = Options(args[1], args[4], port)
+        else:
+            raise Exception("Invalid port number, needs to be in the range of 1 - 65535 (inclusive)")
     else:
         raise Exception("Incorrect argument usage, use --help for more information.")
     return options
