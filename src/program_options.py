@@ -7,7 +7,6 @@ def process_args(args: List[str]) -> Options:
     options: Options = Options("-sT", "0.0.0.0", 0)
     if args[1] == "--help":
         print_help()
-        exit()
     if len(args) == 2:
         options = Options("-sT", args[1], 0)
     elif len(args) == 3 and args[1] in validScan:
@@ -37,7 +36,7 @@ def process_args(args: List[str]) -> Options:
 
 def print_help() -> None:
     print("""------------------------------------------------
-Usage: python GUIPortScanner.py [scan_type] [port] target
+Usage: python GUIPortScanner.py [scan_type] [-p port] target
 ------------------------------------------------
 SCAN TYPE:
 -sT: TCP scan
@@ -47,7 +46,10 @@ SCAN TYPE:
 -sF: FIN scan
 -sX: XMAS scan
 ------------------------------------------------
-TARGETS
+PORT:
+Integer in the range of 1 - 65535 (inclusive)
 ------------------------------------------------
+TARGETS:
 IP adresses
 hostname""")
+    sys.exit()
