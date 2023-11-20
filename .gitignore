@@ -1,3 +1,4 @@
 .idea
 src/__pyache__
 src/.mypy_cache
+venv
