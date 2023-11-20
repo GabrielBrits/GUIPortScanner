@@ -8,7 +8,7 @@ def process_args(args: List[str]) -> Options:
     if args[1] == "--help":
         print_help()
     if len(args) == 2:
-        options = Options("-sT", args[1], 0)
+        options = Options("-sT", args[1], 0)    
     elif len(args) == 3 and args[1] in validScan:
         options = Options(args[1], args[2], 0)
     elif len(args) == 4 and args[1] == "-p":
