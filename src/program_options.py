@@ -3,7 +3,7 @@ from data import Options
 import sys
 
 def process_args(args: List[str]) -> Options:
-    validScan: List[str] = ["-sT", "-sI", "-sS", "-sN", "-sF", "sX"]
+    validScan: List[str] = ["-sT", "-sI", "-sS", "-sN", "-sF", "-sX", "-sU"]
     options: Options = Options("-sT", "0.0.0.0", 0)
     if args[1] == "--help":
         print_help()
@@ -41,6 +41,7 @@ Usage: python GUIPortScanner.py [scan_type] [-p port] target
 SCAN TYPE:
 -sT: TCP scan
 -sI: IP scan
+-sU: UDP scan
 -sS: SYN scan
 -sN: NULL scan
 -sF: FIN scan
