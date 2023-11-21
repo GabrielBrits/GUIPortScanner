@@ -2,6 +2,10 @@ import logging
 import socket
 logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import IP, ICMP, UDP, sr1, conf
+import logging
+import socket
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from scapy.all import IP, ICMP, sr1, conf
 
 class Scanner():
     def __init__(self, scanType: str, target: str, port: int):
@@ -9,7 +13,6 @@ class Scanner():
         self._port: int = port
         self._scanType = scanType
         self._packet = None
-        conf.verb = 0
     
     def InitiateScan(self) -> None:
         match self._scanType:
