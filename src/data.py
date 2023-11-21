@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class Options:
-    scanType: str
+    scan_type: str
     ip: str
     port: int
