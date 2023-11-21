@@ -34,11 +34,11 @@ class Scanner:
             case "-sU":
                 self.udp_scan()
             case "-sN":
-                pass
+                self.null_scan()
             case "-sF":
-                pass
+                self.fin_scan()
             case "-sX":
-                pass
+                self.xmas_scan()
 
     def ip_scan(self) -> None:
         try:
@@ -61,9 +61,11 @@ class Scanner:
             response = sr1(udp_packet, timeout=2)
             if response is None:
                 print(f"UDP Port {self._port} is open or "
-                      f"filtered on IP: {self._target}")
+                      f"filtered on IP: {self._target} running"
+                      f" {socket.getservbyport(self._port, 'udp')}")
             elif response.haslayer(UDP):
-                print(f"UDP Port {self._port} is open on IP: {response.src}")
+                print(f"UDP Port {self._port} is open on IP: {response.src}, "
+                      f"running {socket.getservbyport(self._port, 'udp')}")
             elif response.haslayer(ICMP) and int(
                     response.getlayer(ICMP).type) == 3:
                 if int(response.getlayer(ICMP).code) == 3:
@@ -116,7 +118,24 @@ class Scanner:
                       f" {response.src}")
 
     def null_scan(self):
-        raise NotImplementedError("Not yet implemented")
+        try:
+            tcp_packet = IP(dst=self._target) / TCP(dport=self._port, flags="")
+        except socket.gaierror:
+            raise InvalidHostName()
+        response = sr1(tcp_packet, timeout=2)
+        if response is None:
+            print(f"TCP Port {self._port} is open or "
+                  f"filtered on IP: {self._target}, "
+                  f"running {socket.getservbyport(self._port)}")
+        elif response.haslayer(TCP):
+            if (response.getlayer(TCP).flags == self.RST or
+                    response.getlayer(TCP).flags == self.RST + self.ACK):
+                print(f"TCP Port {self._port} is closed on IP:"
+                      f" {response.src}")
+        elif (response.haslayer(ICMP) and int(response.getlayer(ICMP).code)
+              in [1, 2, 3, 9, 10, 13]):
+            print(f"TCP port {self._port} is filtered on "
+                  f"IP: {response.src}")
 
     def fin_scan(self):
         raise NotImplementedError("Not yet implemented")
