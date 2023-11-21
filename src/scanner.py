@@ -74,28 +74,46 @@ class Scanner:
                           f"IP: {response.src}")
 
     def tcp_scan(self):
-        raise NotImplementedError("Not yet implemented")
+        try:
+            tcp_packet = IP(dst=self._target) / TCP(dport=self._port,
+                                                    flags=self.SYN)
+        except socket.gaierror:
+            raise InvalidHostName()
+        response = sr1(tcp_packet, timeout=2)
+        if response is None:
+            print(f"TCP Port {self._port} is open or "
+                  f"filtered on IP: {self._target}")
+        elif response.haslayer(TCP):
+            if response.getlayer(TCP).flags == self.SYN + self.ACK:
+                sr(IP(dst=self._target) / TCP(dport=self._port,
+                                              flags=self.ACK), timeout=10)
+                print(f"TCP Port {self._port} is open "
+                      f"on IP: {response.src} and should be "
+                      f"running {socket.getservbyport(self._port)}")
+            elif response.getlayer(TCP).flags == self.RST + self.ACK:
+                print(f"TCP Port {self._port} is closed on IP:"
+                      f" {response.src}")
 
     def syn_scan(self):
-            try:
-                tcp_packet = IP(dst=self._target) / TCP(dport=self._port,
-                                                        flags=self.SYN)
-            except socket.gaierror:
-                raise InvalidHostName()
-            response = sr1(tcp_packet, timeout=2)
-            if response is None:
-                print(f"TCP Port {self._port} is open or "
-                      f"filtered on IP: {self._target}")
-            elif response.haslayer(TCP):
-                if response.getlayer(TCP).flags == self.SYN + self.ACK:
-                    sr(IP(dst=self._target) / TCP(dport=self._port,
-                                                  flags=self.RST), timeout=10)
-                    print(f"TCP Port {self._port} is open "
-                          f"on IP: {response.src} and should be "
-                          f"running {socket.getservbyport(self._port)}")
-                elif response.getlayer(TCP).flags == self.RST + self.ACK:
-                    print(f"TCP Port {self._port} is closed on IP:"
-                          f" {response.src}")
+        try:
+            tcp_packet = IP(dst=self._target) / TCP(dport=self._port,
+                                                    flags=self.SYN)
+        except socket.gaierror:
+            raise InvalidHostName()
+        response = sr1(tcp_packet, timeout=2)
+        if response is None:
+            print(f"TCP Port {self._port} is open or "
+                  f"filtered on IP: {self._target}")
+        elif response.haslayer(TCP):
+            if response.getlayer(TCP).flags == self.SYN + self.ACK:
+                sr(IP(dst=self._target) / TCP(dport=self._port,
+                                              flags=self.RST), timeout=10)
+                print(f"TCP Port {self._port} is open "
+                      f"on IP: {response.src} and should be "
+                      f"running {socket.getservbyport(self._port)}")
+            elif response.getlayer(TCP).flags == self.RST + self.ACK:
+                print(f"TCP Port {self._port} is closed on IP:"
+                      f" {response.src}")
 
     def null_scan(self):
         raise NotImplementedError("Not yet implemented")
