@@ -13,6 +13,7 @@ class Scanner():
         self._port: int = port
         self._scanType = scanType
         self._packet = None
+        conf.verb = 0
     
     def InitiateScan(self) -> None:
         match self._scanType:
