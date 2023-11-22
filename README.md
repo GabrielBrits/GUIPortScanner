@@ -15,18 +15,18 @@ command line interface.</p>
 3. IP scan, UDP scan, TCP scan, SYN scan, 
    FIN scan, NULL scan and XMAS scan
 
-# Future Improvements
-
-1. Dockerise the project for cross-platform
-2. Add more features in terms of scanning capabilities
-3. Fork this project into C or C++ to improve performance
-
 # To Implement
 
 1. Implement scanning of all ports
 2. Improve messaging for the CLI
 3. Add multiprocessing for scanning of all ports
 4. GUI using PyQt6
+
+# Future Improvements (will probably never get done)
+
+1. Dockerise the project for cross-platform
+2. Add more features in terms of scanning capabilities
+3. Fork this project into C or C++ to improve performance
 
 # Disclaimer
 
