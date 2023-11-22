@@ -10,6 +10,7 @@ def main() -> None:
         scanner: Scanner = Scanner(options.scan_type, options.ip, options.port)
         scanner.initiate_scan()
     else:
+        # Handle GUI
         pass
 
 
