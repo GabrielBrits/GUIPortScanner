@@ -159,4 +159,23 @@ class Scanner:
                   f"IP: {response.src}")
 
     def xmas_scan(self):
-        raise NotImplementedError("Not yet implemented")
+        try:
+            tcp_packet = (IP(dst=self._target) /
+                          TCP(dport=self._port, flags=self.FIN + self.PSH +
+                          self.URG))
+        except socket.gaierror:
+            raise InvalidHostName()
+        response = sr1(tcp_packet, timeout=2)
+        if response is None:
+            print(f"TCP Port {self._port} is open or "
+                  f"filtered on IP: {self._target}, "
+                  f"running {socket.getservbyport(self._port)}")
+        elif response.haslayer(TCP):
+            if (response.getlayer(TCP).flags == self.RST or
+                    response.getlayer(TCP).flags == self.RST + self.ACK):
+                print(f"TCP Port {self._port} is closed on IP:"
+                      f" {response.src}")
+        elif (response.haslayer(ICMP) and int(response.getlayer(ICMP).code)
+              in [1, 2, 3, 9, 10, 13]):
+            print(f"TCP port {self._port} is filtered on "
+                  f"IP: {response.src}")
