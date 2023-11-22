@@ -18,7 +18,7 @@ def process_args(args: List[str]) -> Options:
         except ValueError:
             raise IncorrectArgumentUsage()
         if 0 < port < 65536:
-            options = Options("-sT", args[2], port)
+            options = Options("-sT", args[3], port)
         else:
             raise InvalidPortNumber()
     elif len(args) == 5 and args[1] in valid_scan and args[2] == "-p":

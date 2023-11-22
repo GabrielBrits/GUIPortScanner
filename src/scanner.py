@@ -28,7 +28,7 @@ class Scanner:
             case "-sI":
                 self.ip_scan()
             case "-sT":
-                pass
+                self.tcp_scan()
             case "-sS":
                 self.syn_scan()
             case "-sU":
@@ -70,10 +70,12 @@ class Scanner:
                     response.getlayer(ICMP).type) == 3:
                 if int(response.getlayer(ICMP).code) == 3:
                     print(f"UDP port {self._port} is closed "
-                          f"on IP: {response.src}")
+                          f"on IP: {response.src} running "
+                          f"{socket.getservbyport(self._port)}")
                 elif int(response.getlayer(ICMP).code) in [1, 2, 9, 10, 13]:
                     print(f"UDP port {self._port} is filtered on "
-                          f"IP: {response.src}")
+                          f"IP: {response.src} running "
+                          f"{socket.getservbyport(self._port)}")
 
     def tcp_scan(self):
         try:
@@ -84,7 +86,8 @@ class Scanner:
         response = sr1(tcp_packet, timeout=2)
         if response is None:
             print(f"TCP Port {self._port} is open or "
-                  f"filtered on IP: {self._target}")
+                  f"filtered on IP: {self._target} running "
+                  f"{socket.getservbyport(self._port)}")
         elif response.haslayer(TCP):
             if response.getlayer(TCP).flags == self.SYN + self.ACK:
                 sr(IP(dst=self._target) / TCP(dport=self._port,
@@ -94,7 +97,8 @@ class Scanner:
                       f"running {socket.getservbyport(self._port)}")
             elif response.getlayer(TCP).flags == self.RST + self.ACK:
                 print(f"TCP Port {self._port} is closed on IP:"
-                      f" {response.src}")
+                      f" {response.src} running "
+                      f"{socket.getservbyport(self._port)}")
 
     def syn_scan(self):
         try:
@@ -105,7 +109,8 @@ class Scanner:
         response = sr1(tcp_packet, timeout=2)
         if response is None:
             print(f"TCP Port {self._port} is open or "
-                  f"filtered on IP: {self._target}")
+                  f"filtered on IP: {self._target} running "
+                  f"{socket.getservbyport(self._port)}")
         elif response.haslayer(TCP):
             if response.getlayer(TCP).flags == self.SYN + self.ACK:
                 sr(IP(dst=self._target) / TCP(dport=self._port,
@@ -115,7 +120,8 @@ class Scanner:
                       f"running {socket.getservbyport(self._port)}")
             elif response.getlayer(TCP).flags == self.RST + self.ACK:
                 print(f"TCP Port {self._port} is closed on IP:"
-                      f" {response.src}")
+                      f" {response.src} running "
+                      f"{socket.getservbyport(self._port)}")
 
     def null_scan(self):
         try:
@@ -131,11 +137,13 @@ class Scanner:
             if (response.getlayer(TCP).flags == self.RST or
                     response.getlayer(TCP).flags == self.RST + self.ACK):
                 print(f"TCP Port {self._port} is closed on IP:"
-                      f" {response.src}")
+                      f" {response.src} running "
+                      f"{socket.getservbyport(self._port)}")
         elif (response.haslayer(ICMP) and int(response.getlayer(ICMP).code)
               in [1, 2, 3, 9, 10, 13]):
             print(f"TCP port {self._port} is filtered on "
-                  f"IP: {response.src}")
+                  f"IP: {response.src} running "
+                  f"{socket.getservbyport(self._port)}")
 
     def fin_scan(self):
         try:
@@ -152,11 +160,13 @@ class Scanner:
             if (response.getlayer(TCP).flags == self.RST or
                     response.getlayer(TCP).flags == self.RST + self.ACK):
                 print(f"TCP Port {self._port} is closed on IP:"
-                      f" {response.src}")
+                      f" {response.src} running "
+                      f"{socket.getservbyport(self._port)}")
         elif (response.haslayer(ICMP) and int(response.getlayer(ICMP).code)
               in [1, 2, 3, 9, 10, 13]):
             print(f"TCP port {self._port} is filtered on "
-                  f"IP: {response.src}")
+                  f"IP: {response.src} running "
+                  f"{socket.getservbyport(self._port)}")
 
     def xmas_scan(self):
         try:
@@ -174,8 +184,10 @@ class Scanner:
             if (response.getlayer(TCP).flags == self.RST or
                     response.getlayer(TCP).flags == self.RST + self.ACK):
                 print(f"TCP Port {self._port} is closed on IP:"
-                      f" {response.src}")
+                      f" {response.src} running "
+                      f"{socket.getservbyport(self._port)}")
         elif (response.haslayer(ICMP) and int(response.getlayer(ICMP).code)
               in [1, 2, 3, 9, 10, 13]):
             print(f"TCP port {self._port} is filtered on "
-                  f"IP: {response.src}")
+                  f"IP: {response.src} running "
+                  f"{socket.getservbyport(self._port)}")
